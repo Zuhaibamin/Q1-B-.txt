@@ -1,0 +1,34 @@
+#include <iostream>
+using namespace std;
+
+class Animal {
+
+public:
+	
+	virtual void makesound() const = 0;
+};
+class Lion : public Animal {
+	
+public:
+	void makesound() const override {
+		cout << "Roar! i am a lion" << endl;
+	}
+};
+class Monkey : public Animal {
+public :
+	void makesound() const override {
+		cout << "Ooh ooh ah ah! I am a monkey" << endl;
+	}
+};
+int main() {
+	Lion lion;
+	Monkey monkey;
+	Animal* zoo[] = { &lion, &monkey };
+
+
+	for (const auto& animal : zoo) {
+		animal->makesound();
+	}
+	return 0;
+}
+
