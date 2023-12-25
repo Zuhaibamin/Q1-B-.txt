@@ -1,0 +1,107 @@
+#include <iostream>
+#include <string>
+
+// Product class
+class Product {
+private:
+    int productId;
+    std::string productName;
+    double productPrice; // Renamed to avoid conflict with the member function
+
+public:
+    Product(int id, const std::string& name, double p) : productId(id), productName(name), productPrice(p) {}
+
+    void displayDetails() const {
+        std::cout << "Product ID: " << productId << ", Name: " << productName << ", Price: $" << productPrice << std::endl;
+    }
+
+    double getPrice() const { // Renamed from 'price' to avoid conflict
+        return productPrice;
+    }
+};
+
+// ShoppingCart class
+class ShoppingCart {
+private:
+    static const int MAX_PRODUCTS = 10;
+    Product* products[MAX_PRODUCTS];
+    int numOfProducts;
+
+public:
+    ShoppingCart() : numOfProducts(0) {}
+
+    ~ShoppingCart() {
+        for (int i = 0; i < numOfProducts; ++i) {
+            delete products[i];
+        }
+    }
+
+    void addProduct(Product* product) {
+        if (numOfProducts < MAX_PRODUCTS) {
+            products[numOfProducts++] = product;
+        }
+        else {
+            std::cout << "Cannot add more products. Cart is full." << std::endl;
+        }
+    }
+
+    void displayProducts() const {
+        std::cout << "Products in the Shopping Cart:" << std::endl;
+        for (int i = 0; i < numOfProducts; ++i) {
+            products[i]->displayDetails();
+        }
+    }
+
+    double calculateTotalCost() const {
+        double totalCost = 0.0;
+        for (int i = 0; i < numOfProducts; ++i) {
+            totalCost += products[i]->getPrice(); // Use the renamed function
+        }
+        return totalCost;
+    }
+};
+
+// User class
+class User {
+private:
+    int userId;
+    ShoppingCart* shoppingCart;
+
+public:
+    User(int id) : userId(id), shoppingCart(nullptr) {}
+
+    ~User() {
+        delete shoppingCart;
+    }
+
+    void assignShoppingCart(ShoppingCart* cart) {
+        shoppingCart = cart;
+    }
+
+    void displayDetails() const {
+        std::cout << "User ID: " << userId << std::endl;
+        if (shoppingCart) {
+            std::cout << "Shopping Cart Details:" << std::endl;
+            shoppingCart->displayProducts();
+        }
+        else {
+            std::cout << "No shopping cart assigned." << std::endl;
+        }
+    }
+};
+
+int main() {
+    Product* product1 = new Product(1, "Laptop", 1200.0);
+    Product* product2 = new Product(2, "Smartphone", 800.0);
+
+    ShoppingCart cart;
+    cart.addProduct(product1);
+    cart.addProduct(product2);
+
+    User user(123);
+    user.assignShoppingCart(&cart);
+
+    user.displayDetails();
+
+    return 0;
+}
